@@ -1,0 +1,65 @@
+#!/bin/bash
+
+export PROJECTNAME="."
+
+
+echo "the project location is : $PROJECTNAME"
+echo "removing libs"
+vdel -lib $PROJECTNAME/LIB/LIB_RTL -all
+vdel -lib $PROJECTNAME/LIB/LIB_BENCH -all
+
+echo "creating library "
+
+vlib $PROJECTNAME/LIB/LIB_RTL
+vmap LIB_RTL $PROJECTNAME/LIB/LIB_RTL
+vlib $PROJECTNAME/LIB/LIB_BENCH
+vmap LIB_BENCH $PROJECTNAME/LIB/LIB_BENCH
+
+#vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/ascon_top.vhd
+# compilation des fichiers sources
+echo "compile vhdl sources"
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/ascon_pack.vhd 
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/constant_addition.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/sbox.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/substitution_layer.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/diffusion_layer.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/state_register.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/mux_state.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/permutation_step0.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/xor_begin.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/permutation_step1.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/xor_end.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/permutation_step2.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/fsm_moore_initialisation.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/compteur_double_init.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/top_ASCON_initialisation.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/fsm_moore_mode_data.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/top_ASCON_mode_data.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/fsm_moore_mode_plain_text.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/top_ASCON_mode_plain_text.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/fsm_moore_finalisation.vhd
+vcom -work LIB_RTL $PROJECTNAME/SRC/SRC_RTL/top_ASCON_finalisation.vhd
+    
+# compilation des fichiers TB
+echo "compile vhdl test bench"
+
+#vcom -work LIB_BENCH $PROJECTNAME/SRC/SRC_BENCH/ascon_top_tb.vhd
+vcom -work LIB_BENCH $PROJECTNAME/SRC/SRC_BENCH/constant_addition_tb.vhd
+vcom -work LIB_BENCH $PROJECTNAME/SRC/SRC_BENCH/sbox_tb.vhd
+vcom -work LIB_BENCH $PROJECTNAME/SRC/SRC_BENCH/substitution_layer_tb.vhd
+vcom -work LIB_BENCH $PROJECTNAME/SRC/SRC_BENCH/diffusion_layer_tb.vhd
+vcom -work LIB_BENCH $PROJECTNAME/SRC/SRC_BENCH/permutation_step0_tb.vhd
+vcom -work LIB_BENCH $PROJECTNAME/SRC/SRC_BENCH/permutation_step1_tb.vhd
+vcom -work LIB_BENCH $PROJECTNAME/SRC/SRC_BENCH/permutation_step2_tb.vhd
+vcom -work LIB_BENCH $PROJECTNAME/SRC/SRC_BENCH/top_ASCON_initialisation_tb.vhd
+vcom -work LIB_BENCH $PROJECTNAME/SRC/SRC_BENCH/top_ASCON_mode_data_tb.vhd
+vcom -work LIB_BENCH $PROJECTNAME/SRC/SRC_BENCH/top_ASCON_mode_plain_text_tb.vhd
+vcom -work LIB_BENCH $PROJECTNAME/SRC/SRC_BENCH/top_ASCON_finalisation_tb.vhd
+
+# lancement du simulateur
+echo "compilation finished"
+echo "start simulation..."
+
+# ATTENTION un seul VSIM decommenté à la fois!
+
+#vsim LIB_BENCH.ascon_top_tb_conf #-do ascon_top_wave.do
